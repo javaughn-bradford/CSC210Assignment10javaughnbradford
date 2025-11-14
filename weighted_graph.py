@@ -11,7 +11,6 @@ class WeightedEdge:
     from_: str
     to: str 
 
-
 class WeightedGraph:
 
     def __init__(self):
@@ -45,17 +44,44 @@ class WeightedGraph:
         if from_ not in self._adjacency_list:
             return False
         return to in self.neighbors(from_)
+    
+    def path_map_to_path(self, previous_map, goal):
+        path = []
+        current = goal
+        while True:
+            path.insert(0, current)
+            previous = previous_map[current]
+            if previous == current:
+                break
+            current = previous
+        return path
 
-    # Perform jarnik's algorithm from *start*, looking through
-    # the entire graph to form a minimum-spanning-tree (MST)
-    # Returns a list of weighted edges composing the MST
-    def jarnik(self, start):
-        result = [] # final weighted edges in MST
-        # YOUR CODE HERE
-        
-        return result
+    # dijkstra's
+    def dijkstra(self, start):
+        # parents keeps track of how we reached each node
+        parents = {start: start}
+        distances = {start: 0}
+
+        pq = PriorityQueue()
+        pq.put((0, start))   #distance
+
+        # Loop until no more nodes are left to process
+        while not pq.empty():
+            current_dist, current = pq.get()
+
+            for edge in self.edges_from(current):
+                new_distance = current_dist + edge.weight
+
+                if edge.to not in distances or new_distance < distances[edge.to]:
+                    distances[edge.to] = new_distance
+                    parents[edge.to] = current
+                    pq.put((new_distance, edge.to))
+
+        return parents, distances
     
     
     def __str__(self):
-        return '\n'.join(f"{vertex}: {[f'{edge.to}({edge.weight})' for edge in edges]}"
-                         for vertex, edges in self._adjacency_list.items())
+        return '\n'.join(
+            f"{vertex}: {[f'{edge.to}({edge.weight})' for edge in edges]}"
+            for vertex, edges in self._adjacency_list.items()
+        )
