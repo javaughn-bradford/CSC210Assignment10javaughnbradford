@@ -22,4 +22,4 @@ Feel free to do online research to answer these questions. But if you do, be sur
 
 
 6. Jarnik's algorithm is commonly known as Prim's algorithm, even though Jarnik discovered it and published it decades before Prim rediscovered it. Research another algorithm that has a different common name from its original discoverer. What is the purpose of the algorithm and why did its original creator not get credit? 
-- 
+- Another is Gaussian elimation algorithm. This algorithm is used to solve systems of linear equations and taking out variables step by atep usung matrix row operations. This algorithm was used way before Carl Friedrich Gauss had it but he was the one to make it popular in the world and thats how his name is on the algorithm. 
