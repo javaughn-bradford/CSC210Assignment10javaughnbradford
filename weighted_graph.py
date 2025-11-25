@@ -2,6 +2,7 @@
 # A weighted graph stored using an adjacency list
 # Modified by:
 # Note: Please write this yourself, not using an LLM.
+
 from queue import PriorityQueue
 from dataclasses import dataclass
 
@@ -10,6 +11,7 @@ class WeightedEdge:
     weight: float | int
     from_: str
     to: str 
+
 
 class WeightedGraph:
 
@@ -24,6 +26,7 @@ class WeightedGraph:
         if from_ not in self._adjacency_list:
             self._adjacency_list[from_] = set()
         self._adjacency_list[from_].add(WeightedEdge(weight, from_, to))
+
         if bidirectional:
             if to not in self._adjacency_list:
                 self._adjacency_list[to] = set()
@@ -56,16 +59,14 @@ class WeightedGraph:
             current = previous
         return path
 
-    # dijkstra's
+    # Dijkstra's algorithm
     def dijkstra(self, start):
-        # parents keeps track of how we reached each node
         parents = {start: start}
         distances = {start: 0}
 
         pq = PriorityQueue()
-        pq.put((0, start))   #distance
+        pq.put((0, start))  
 
-        # Loop until no more nodes are left to process
         while not pq.empty():
             current_dist, current = pq.get()
 
@@ -78,6 +79,40 @@ class WeightedGraph:
                     pq.put((new_distance, edge.to))
 
         return parents, distances
+
+
+    # Jarnik's (Prim's) Algorithm - Minimum Spanning Tree
+    def jarnik(self, start_vertex):
+        if start_vertex not in self._adjacency_list:
+            raise ValueError("Start vertex not in graph")
+
+        visited = set([start_vertex])
+        mst = []
+
+        pq = PriorityQueue()
+
+        # Push all edges from the start vertex
+        for edge in self.edges_from(start_vertex):
+            pq.put((edge.weight, edge))
+
+        # Keep going until all vertices are included
+        while not pq.empty() and len(visited) < len(self._adjacency_list):
+            weight, edge = pq.get()
+
+            # Skip if the destination is already visited
+            if edge.to in visited:
+                continue
+
+            # Add this edge to the MST
+            mst.append(edge)
+            visited.add(edge.to)
+
+            # Add new edges from the newly visited vertex
+            for next_edge in self.edges_from(edge.to):
+                if next_edge.to not in visited:
+                    pq.put((next_edge.weight, next_edge))
+
+        return mst
     
     
     def __str__(self):
